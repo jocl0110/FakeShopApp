@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import NavBar from "./components/NavBar/NavBar";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   const [data, setData] = useState(null);
@@ -23,7 +24,12 @@ function App() {
       <NavBar />
       <main>
         <div>
-          <h2>Welcome to our Fake Store</h2>
+          <label>
+            <input type="text" placeholder="What can we help you find" />{" "}
+            <button>Search</button>
+          </label>
+        </div>
+        <div>
           <ul className="products-grid">
             {data &&
               data.map((item) => {
@@ -37,12 +43,14 @@ function App() {
                     <p>{item.title}</p>
                     <p>{item.description}</p>
                     <p>{item.price}</p>
+                    <button type="button">Add to Cart</button>
                   </li>
                 );
               })}
           </ul>
         </div>
       </main>
+      <Footer />
     </>
   );
 }
