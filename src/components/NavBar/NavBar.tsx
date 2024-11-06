@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./NavBar.css";
+
 const NavBar = () => {
   const [categories, setCategories] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -25,8 +26,15 @@ const NavBar = () => {
       <nav>
         <ul>
           <li>
+            <img
+              src="src/assets/store.png"
+              alt="store-icon"
+              style={{ width: "50px" }}
+            />
+          </li>
+          <li>
             <div className="dept-dropdown">
-              <button onClick={handleShow}>Departments</button>
+              <div onClick={handleShow}>Departments</div>
               <div
                 className={
                   showDropdown ? "show-dept-dropdown" : "hidden-dept-dropdown"
@@ -42,6 +50,14 @@ const NavBar = () => {
                   })}
               </div>
             </div>
+          </li>
+          <li>Wish List</li>
+          <li>
+            <img
+              style={{ width: "35px" }}
+              src="src/assets/cart-shopping-solid.svg"
+              alt="cart icon"
+            />
           </li>
         </ul>
       </nav>
