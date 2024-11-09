@@ -3,15 +3,18 @@ import "./NavBar.css";
 import { useNavigate } from "react-router-dom";
 import { FaRegUserCircle } from "react-icons/fa";
 
-const NavBar = () => {
+const NavBar = ({ onSearch }) => {
   const [categories, setCategories] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [searchParam, setSearchParam] = useState("");
 
   useEffect(() => {
     async function getData() {
       try {
-        const res = await fetch("https://fakestoreapi.com/products/categories");
+        const res = await fetch("https://dummyjson.com/products/categories");
         const data = await res.json();
+        console.log(data);
+
         setCategories(data);
       } catch (e) {
         console.log(e);
@@ -34,6 +37,12 @@ const NavBar = () => {
 
   const handleSearch = () => {
     navigate("/");
+    setSearchParam("");
+    onSearch(searchParam);
+  };
+
+  const handleChange = (e) => {
+    setSearchParam(e.target.value);
   };
   const handleWishList = () => {
     navigate("/wishlist");
@@ -63,7 +72,7 @@ const NavBar = () => {
                   categories.map((cat) => {
                     return (
                       <ul>
-                        <li key={cat.id}>{cat}</li>
+                        <li key={cat.id}>{cat.name}</li>
                       </ul>
                     );
                   })}
@@ -73,7 +82,12 @@ const NavBar = () => {
           <li onClick={handleWishList}>Wish List</li>
           <li>
             <label>
-              <input type="text" placeholder="What can we help you find" />{" "}
+              <input
+                value={searchParam}
+                type="text"
+                placeholder="What can we help you find"
+                onChange={handleChange}
+              />{" "}
               <button type="submit" onClick={handleSearch}>
                 Search
               </button>
