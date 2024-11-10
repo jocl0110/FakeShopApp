@@ -27,8 +27,10 @@ function App() {
     getData();
   }, []);
 
-  const handleProductDetails = () => {
-    navigate("/product");
+  const handleProductDetails = (getCurrentId: string) => {
+    console.log(getCurrentId);
+
+    navigate(`/product/${getCurrentId}`);
   };
 
   return (
@@ -48,7 +50,7 @@ function App() {
                         return (
                           <li key={item.id}>
                             <img
-                              onClick={handleProductDetails}
+                              onClick={() => handleProductDetails(item.id)}
                               style={{ width: "200px", height: "auto" }}
                               src={item.thumbnail}
                               alt={item.title}
@@ -57,7 +59,9 @@ function App() {
                               <IoStar />
                               {item.rating}
                             </p>
-                            <p onClick={handleProductDetails}>{item.title}</p>
+                            <p onClick={() => handleProductDetails(item.id)}>
+                              {item.title}
+                            </p>
                             <p>${item.price}</p>
                             <p>{item.availabilityStatus}</p>
                             <button type="button">Add to Cart</button>
@@ -76,7 +80,7 @@ function App() {
         ></Route>
         <Route path="/wishlist" element={<h1>Hello</h1>}></Route>
         <Route path="/cart" element={<Cart />}></Route>
-        <Route path="/product" element={<ProductDetails />}></Route>
+        <Route path="/product/:id" element={<ProductDetails />}></Route>
       </Routes>
     </>
   );
