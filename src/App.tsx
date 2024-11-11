@@ -9,11 +9,13 @@ import ProductDetails from "./components/ProductDetails/ProductDetails";
 import { CiHeart } from "react-icons/ci";
 import { MdNavigateNext } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
+import Departments from "./components/Departments/Departments";
 
 function App() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [url, setUrl] = useState("");
 
   const getData = async (searchParam = "", limit = 100) => {
     try {
@@ -45,19 +47,19 @@ function App() {
 
   const handleNext = () => {
     if (startIndex + itemsPerPage < data.length) {
-      setCurrentSlide(currentSlide + 1);
+      setCurrentSlide((prevState) => prevState + 1);
     }
   };
 
   const handlePrevious = () => {
     if (currentSlide > 0) {
-      setCurrentSlide(currentSlide - 1);
+      setCurrentSlide((prevState) => prevState - 1);
     }
   };
 
   return (
     <>
-      <NavBar onSearch={getData} />
+      <NavBar setUrl={setUrl} onSearch={getData} />
       <Routes>
         <Route
           path="/"
@@ -118,6 +120,9 @@ function App() {
         <Route path="/wishlist" element={<h1>Hello</h1>}></Route>
         <Route path="/cart" element={<Cart />}></Route>
         <Route path="/product/:id" element={<ProductDetails />}></Route>
+        <Route path="/category/:name" element={<Departments url={url} />}>
+          {" "}
+        </Route>
       </Routes>
     </>
   );
