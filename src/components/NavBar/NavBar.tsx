@@ -3,7 +3,7 @@ import "./NavBar.css";
 import { useNavigate } from "react-router-dom";
 import { FaRegUserCircle } from "react-icons/fa";
 
-const NavBar = ({ onSearch }) => {
+const NavBar = ({ onSearch, setUrl }) => {
   const [categories, setCategories] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchParam, setSearchParam] = useState("");
@@ -47,6 +47,10 @@ const NavBar = ({ onSearch }) => {
   const handleWishList = () => {
     navigate("/wishlist");
   };
+  const handleDepartments = (url, name) => {
+    navigate(`/category/${name}`);
+    setUrl(url);
+  };
 
   return (
     <header>
@@ -72,7 +76,12 @@ const NavBar = ({ onSearch }) => {
                   categories.map((cat) => {
                     return (
                       <ul>
-                        <li key={cat.id}>{cat.name}</li>
+                        <li
+                          onClick={() => handleDepartments(cat.url, cat.slug)}
+                          key={cat.id}
+                        >
+                          {cat.name}
+                        </li>
                       </ul>
                     );
                   })}

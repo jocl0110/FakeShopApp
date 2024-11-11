@@ -6,16 +6,23 @@ import Footer from "./components/Footer/Footer";
 import Cart from "./components/Cart/Cart";
 import { IoStar } from "react-icons/io5";
 import ProductDetails from "./components/ProductDetails/ProductDetails";
+import { CiHeart } from "react-icons/ci";
+import { MdNavigateNext } from "react-icons/md";
+import { GrFormPrevious } from "react-icons/gr";
+import Departments from "./components/Departments/Departments";
 
 function App() {
   const navigate = useNavigate();
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [url, setUrl] = useState("");
 
-  const getData = async (searchParam = "") => {
+  const getData = async (searchParam = "", limit = 100) => {
     try {
-      const res = await fetch(
-        `https://dummyjson.com/products/search?q=${searchParam}`
-      );
+      const url = searchParam
+        ? `https://dummyjson.com/products/search?q=${searchParam}&limit=${limit}`
+        : `https://dummyjson.com/products?limit=${limit}`;
+      const res = await fetch(url);
       const data = await res.json();
       setData(data.products);
     } catch (e) {
@@ -33,9 +40,26 @@ function App() {
     navigate(`/product/${getCurrentId}`);
   };
 
+  const itemsPerPage = 20;
+  const totalSlides = Math.ceil(data.length / itemsPerPage);
+  const startIndex = currentSlide * itemsPerPage;
+  const currentProducts = data.slice(startIndex, startIndex + itemsPerPage);
+
+  const handleNext = () => {
+    if (startIndex + itemsPerPage < data.length) {
+      setCurrentSlide((prevState) => prevState + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentSlide > 0) {
+      setCurrentSlide((prevState) => prevState - 1);
+    }
+  };
+
   return (
     <>
-      <NavBar onSearch={getData} />
+      <NavBar setUrl={setUrl} onSearch={getData} />
       <Routes>
         <Route
           path="/"
@@ -45,8 +69,8 @@ function App() {
                 <div></div>
                 <div>
                   <ul className="products-grid">
-                    {data && data.length > 0 ? (
-                      data.map((item) => {
+                    {currentProducts && currentProducts.length > 0 ? (
+                      currentProducts.map((item) => {
                         return (
                           <li key={item.id}>
                             <img
@@ -65,6 +89,10 @@ function App() {
                             <p>${item.price}</p>
                             <p>{item.availabilityStatus}</p>
                             <button type="button">Add to Cart</button>
+                            <button type="button">
+                              Save it for later
+                              <CiHeart />
+                            </button>
                           </li>
                         );
                       })
@@ -72,6 +100,17 @@ function App() {
                       <p>No product found</p>
                     )}
                   </ul>
+                </div>
+                <div>
+                  <button>
+                    <GrFormPrevious onClick={handlePrevious} />
+                  </button>
+                  <span>
+                    Slide {currentSlide + 1} of {totalSlides}
+                  </span>
+                  <button>
+                    <MdNavigateNext onClick={handleNext} />
+                  </button>
                 </div>
               </main>
               <Footer />
@@ -81,6 +120,9 @@ function App() {
         <Route path="/wishlist" element={<h1>Hello</h1>}></Route>
         <Route path="/cart" element={<Cart />}></Route>
         <Route path="/product/:id" element={<ProductDetails />}></Route>
+        <Route path="/category/:name" element={<Departments url={url} />}>
+          {" "}
+        </Route>
       </Routes>
     </>
   );

@@ -1,0 +1,7 @@
+.product-by-department-ul {
+  display: grid;
+  grid-template-rows: repeat(auto, 1fr);
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
