@@ -2,9 +2,14 @@ import { useEffect, useState } from "react";
 import { CiHeart } from "react-icons/ci";
 import { IoStar } from "react-icons/io5";
 import "./Departments.css";
+import { useLocation } from "react-router-dom";
 
 const Departments = ({ url }) => {
   const [catProducts, setCatProducts] = useState([]);
+  const [pathName, setPathName] = useState("");
+
+  const location = useLocation().pathname;
+  console.log(location);
 
   const fetchDepartmentProducts = async () => {
     try {
@@ -18,10 +23,11 @@ const Departments = ({ url }) => {
 
   useEffect(() => {
     fetchDepartmentProducts();
-  }, [url]);
+    setPathName(location);
+  }, [url, pathName]);
   return (
     <div>
-      <div>Departments</div>
+      <div>{pathName}</div>
       <div>
         <ul className="product-by-department-ul">
           {catProducts &&

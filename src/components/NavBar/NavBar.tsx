@@ -48,7 +48,7 @@ const NavBar = ({ onSearch, setUrl }) => {
     navigate("/wishlist");
   };
   const handleDepartments = (url, name) => {
-    navigate(`/category/${name}`);
+    navigate(`products/departments/${name}`);
     setUrl(url);
   };
 
@@ -72,19 +72,19 @@ const NavBar = ({ onSearch, setUrl }) => {
                   showDropdown ? "show-dept-dropdown" : "hidden-dept-dropdown"
                 }
               >
-                {categories &&
-                  categories.map((cat) => {
-                    return (
-                      <ul>
+                <ul>
+                  {categories &&
+                    categories.map((cat) => {
+                      return (
                         <li
                           onClick={() => handleDepartments(cat.url, cat.slug)}
-                          key={cat.id}
+                          key={cat.name}
                         >
                           {cat.name}
                         </li>
-                      </ul>
-                    );
-                  })}
+                      );
+                    })}
+                </ul>
               </div>
             </div>
           </li>
@@ -94,7 +94,7 @@ const NavBar = ({ onSearch, setUrl }) => {
               <input
                 value={searchParam}
                 type="text"
-                placeholder="What can we help you find"
+                placeholder="Search for an item"
                 onChange={handleChange}
               />{" "}
               <button type="submit" onClick={handleSearch}>
