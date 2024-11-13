@@ -34,10 +34,12 @@ function App() {
     getData();
   }, []);
 
-  const handleProductDetails = (getCurrentId: string) => {
+  const handleProductDetails = (
+    getCurrentId: string,
+    getCurrentCategory: string
+  ) => {
     console.log(getCurrentId);
-
-    navigate(`/product/${getCurrentId}`);
+    navigate(`/products/departments/${getCurrentCategory}/${getCurrentId}`);
   };
 
   const itemsPerPage = 20;
@@ -74,7 +76,9 @@ function App() {
                         return (
                           <li key={item.id}>
                             <img
-                              onClick={() => handleProductDetails(item.id)}
+                              onClick={() =>
+                                handleProductDetails(item.id, item.category)
+                              }
                               style={{ width: "200px", height: "auto" }}
                               src={item.thumbnail}
                               alt={item.title}
@@ -83,7 +87,11 @@ function App() {
                               <IoStar />
                               {item.rating}
                             </p>
-                            <p onClick={() => handleProductDetails(item.id)}>
+                            <p
+                              onClick={() =>
+                                handleProductDetails(item.id, item.category)
+                              }
+                            >
                               {item.title}
                             </p>
                             <p>${item.price}</p>
@@ -119,8 +127,14 @@ function App() {
         ></Route>
         <Route path="/wishlist" element={<h1>Hello</h1>}></Route>
         <Route path="/cart" element={<Cart />}></Route>
-        <Route path="/product/:id" element={<ProductDetails />}></Route>
-        <Route path="/category/:name" element={<Departments url={url} />}>
+        <Route
+          path="/products/departments/:category/:id"
+          element={<ProductDetails />}
+        ></Route>
+        <Route
+          path="products/departments/:name"
+          element={<Departments url={url} />}
+        >
           {" "}
         </Route>
       </Routes>
