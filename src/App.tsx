@@ -11,9 +11,22 @@ import { MdNavigateNext } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
 import Departments from "./components/Departments/Departments";
 
+// Types
+interface ProductType {
+  id: string;
+  category: string;
+  thumbnail: string;
+  title: string;
+  price: number;
+  rating: number;
+  availabilityStatus: string;
+  quantity?: number;
+}
+
 function App() {
   const navigate = useNavigate();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<ProductType[]>([]);
+  const [cart, setCart] = useState<ProductType[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [url, setUrl] = useState("");
 
@@ -41,7 +54,32 @@ function App() {
     console.log(getCurrentId);
     navigate(`/products/departments/${getCurrentCategory}/${getCurrentId}`);
   };
+  const handleAddtoCart = (getItem: ProductType) => {
+    setCart((prevCart) => {
+      const itemInCart = prevCart.find((product) => product.id === getItem.id);
+      if (itemInCart) {
+        return prevCart.map((product) => {
+          product.id === getItem.id
+            ? { ...product, quantity: (product.quantity || 1) + 1 }
+            : product;
+        });
+      }
+      return [...prevCart, { ...getItem, quantity: 1 }];
+    });
+  };
 
+  const updateQuantity = (id: string, quantity: number) => {
+    setCart((prevCart) => {
+      if (quantity <= 0) {
+        return prevCart.filter((product) => product.id !== id);
+      }
+      return prevCart.map((product) =>
+        product.id === id ? { ...product, quantity } : product
+      );
+    });
+  };
+
+  // Slider Funcionality
   const itemsPerPage = 20;
   const totalSlides = Math.ceil(data.length / itemsPerPage);
   const startIndex = currentSlide * itemsPerPage;
@@ -96,7 +134,47 @@ function App() {
                             </p>
                             <p>${item.price}</p>
                             <p>{item.availabilityStatus}</p>
-                            <button type="button">Add to Cart</button>
+                            {cart.some((product) => product.id === item.id) ? (
+                              <div>
+                                <button
+                                  onClick={() =>
+                                    updateQuantity(
+                                      item.id,
+                                      (cart.find(
+                                        (product) => product.id === item.id
+                                      )?.quantity || 1) - 1
+                                    )
+                                  }
+                                >
+                                  -
+                                </button>
+                                <span>
+                                  {cart.find(
+                                    (product) => product.id === item.id
+                                  )?.quantity || 1}
+                                </span>
+                                <button
+                                  onClick={() =>
+                                    updateQuantity(
+                                      item.id,
+                                      (cart.find(
+                                        (product) => product.id === item.id
+                                      )?.quantity || 1) + 1
+                                    )
+                                  }
+                                >
+                                  +
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => handleAddtoCart(item)}
+                                type="button"
+                              >
+                                Add to Cart
+                              </button>
+                            )}
+
                             <button type="button">
                               Save it for later
                               <CiHeart />
@@ -109,7 +187,11 @@ function App() {
                     )}
                   </ul>
                 </div>
-                <div>
+                <div
+                  className={
+                    data.length >= 20 ? "show-slides" : "not-show-slides"
+                  }
+                >
                   <button>
                     <GrFormPrevious onClick={handlePrevious} />
                   </button>
@@ -126,7 +208,12 @@ function App() {
           }
         ></Route>
         <Route path="/wishlist" element={<h1>Hello</h1>}></Route>
-        <Route path="/cart" element={<Cart />}></Route>
+        <Route
+          path="/cart"
+          element={
+            <Cart cart={cart} setCart={setCart} onClick={updateQuantity} />
+          }
+        ></Route>
         <Route
           path="/products/departments/:category/:id"
           element={<ProductDetails />}
