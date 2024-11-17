@@ -10,6 +10,7 @@ import { CiHeart } from "react-icons/ci";
 import { MdNavigateNext } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
 import Departments from "./components/Departments/Departments";
+import { FaMinus, FaPlus } from "react-icons/fa";
 
 // Types
 interface ProductType {
@@ -146,7 +147,7 @@ function App() {
                                     )
                                   }
                                 >
-                                  -
+                                  <FaMinus />
                                 </button>
                                 <span>
                                   {cart.find(
@@ -163,7 +164,7 @@ function App() {
                                     )
                                   }
                                 >
-                                  +
+                                  <FaPlus />
                                 </button>
                               </div>
                             ) : (
@@ -192,14 +193,20 @@ function App() {
                     data.length >= 20 ? "show-slides" : "not-show-slides"
                   }
                 >
-                  <button>
-                    <GrFormPrevious onClick={handlePrevious} />
+                  <button
+                    onClick={handlePrevious}
+                    disabled={currentSlide === 0}
+                  >
+                    <GrFormPrevious />
                   </button>
                   <span>
                     Slide {currentSlide + 1} of {totalSlides}
                   </span>
-                  <button>
-                    <MdNavigateNext onClick={handleNext} />
+                  <button
+                    onClick={handleNext}
+                    disabled={currentSlide + 1 === totalSlides}
+                  >
+                    <MdNavigateNext />
                   </button>
                 </div>
               </main>
@@ -210,9 +217,7 @@ function App() {
         <Route path="/wishlist" element={<h1>Hello</h1>}></Route>
         <Route
           path="/cart"
-          element={
-            <Cart cart={cart} setCart={setCart} onClick={updateQuantity} />
-          }
+          element={<Cart cart={cart} setCart={setCart} />}
         ></Route>
         <Route
           path="/products/departments/:category/:id"
