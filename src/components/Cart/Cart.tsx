@@ -1,15 +1,16 @@
 import { FaMinus, FaPlus } from "react-icons/fa";
 
 const Cart = ({ cart, setCart }) => {
-  const handleIncrement = (itemId) => {
-    setCart((prevState) =>
-      prevState.map((item) => {
-        return item.id === itemId
-          ? { ...item, quantity: item.quantity + 1 }
-          : item;
-      })
-    );
-  };
+  //Getting total quantity of items in the cart and total price
+  const totalQuantity = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const totalPrice = cart.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+  console.log(totalQuantity);
+  console.log(totalPrice);
+
+  // Callback Functions
 
   const handleDecrement = (itemId) => {
     setCart((prevCart) =>
@@ -20,6 +21,16 @@ const Cart = ({ cart, setCart }) => {
             : item
         )
         .filter((item) => item.quantity > 0)
+    );
+  };
+
+  const handleIncrement = (itemId) => {
+    setCart((prevState) =>
+      prevState.map((item) => {
+        return item.id === itemId
+          ? { ...item, quantity: item.quantity + 1 }
+          : item;
+      })
     );
   };
 
