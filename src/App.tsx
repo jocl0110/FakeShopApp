@@ -11,6 +11,7 @@ import { MdNavigateNext } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
 import Departments from "./components/Departments/Departments";
 import { FaMinus, FaPlus } from "react-icons/fa";
+import WishList from "./components/WishList/WishList";
 
 // Types
 interface ProductType {
@@ -28,6 +29,7 @@ function App() {
   const navigate = useNavigate();
   const [data, setData] = useState<ProductType[]>([]);
   const [cart, setCart] = useState<ProductType[]>([]);
+  const [favoriteList, setFavoriteList] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [url, setUrl] = useState("");
 
@@ -86,6 +88,21 @@ function App() {
         product.id === id ? { ...product, quantity } : product
       );
     });
+  };
+
+  const handleWishList = (getCurrentItem) => {
+    console.log(getCurrentItem);
+
+    let favoriteListCopy = [...favoriteList];
+    const index = favoriteListCopy.findIndex((item) => {
+      return item.id === getCurrentItem.id;
+    });
+    if (index === -1) {
+      favoriteListCopy.push(getCurrentItem);
+    } else {
+      favoriteListCopy.splice(index, 1);
+    }
+    setFavoriteList(favoriteListCopy);
   };
 
   // Slider Funcionality
@@ -184,7 +201,10 @@ function App() {
                               </button>
                             )}
 
-                            <button type="button">
+                            <button
+                              type="button"
+                              onClick={() => handleWishList(item)}
+                            >
                               Save for later
                               <CiHeart />
                             </button>
@@ -222,7 +242,12 @@ function App() {
             </>
           }
         ></Route>
-        <Route path="/wishlist" element={<h1>Hello</h1>}></Route>
+        <Route
+          path="/wishlist"
+          element={
+            <WishList favoriteList={favoriteList} quantity={totalQuantity} />
+          }
+        ></Route>
         <Route
           path="/cart"
           element={
@@ -237,7 +262,13 @@ function App() {
         ></Route>
         <Route
           path="/products/departments/:category/:id"
-          element={<ProductDetails />}
+          element={
+            <ProductDetails
+              Cart={cart}
+              handleAddtoCart={handleAddtoCart}
+              updateQuantity={updateQuantity}
+            />
+          }
         ></Route>
         <Route
           path="products/departments/:name"
