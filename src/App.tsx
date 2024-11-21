@@ -6,7 +6,7 @@ import Footer from "./components/Footer/Footer";
 import Cart from "./components/Cart/Cart";
 import { IoStar } from "react-icons/io5";
 import ProductDetails from "./components/ProductDetails/ProductDetails";
-import { CiHeart } from "react-icons/ci";
+
 import { MdNavigateNext } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
 import Departments from "./components/Departments/Departments";
@@ -205,8 +205,11 @@ function App() {
                               type="button"
                               onClick={() => handleWishList(item)}
                             >
-                              Save for later
-                              <CiHeart />
+                              {favoriteList.some(
+                                (favItem) => favItem.id === item.id
+                              )
+                                ? "Remove from favorites"
+                                : "Save for later"}
                             </button>
                           </li>
                         );
@@ -245,7 +248,16 @@ function App() {
         <Route
           path="/wishlist"
           element={
-            <WishList favoriteList={favoriteList} quantity={totalQuantity} />
+            <WishList
+              setFavoriteList={setFavoriteList}
+              setCart={setCart}
+              cart={cart}
+              updateQuantity={updateQuantity}
+              handleAddtoCart={handleAddtoCart}
+              handleProductDetails={handleProductDetails}
+              handleWishList={handleWishList}
+              favoriteList={favoriteList}
+            />
           }
         ></Route>
         <Route

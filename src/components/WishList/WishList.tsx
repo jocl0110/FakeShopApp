@@ -1,19 +1,88 @@
-import { useState } from "react";
+import { FaMinus, FaPlus } from "react-icons/fa";
 
-const WishList = ({ quantity, favoriteList }) => {
+const WishList = ({
+  setFavoriteList,
+  favoriteList,
+  handleWishList,
+  handleProductDetails,
+  handleAddtoCart,
+  cart,
+  updateQuantity,
+  setCart,
+}) => {
+  const handleAddAllToCart = () => {
+    setCart((prevState) => [
+      ...prevState,
+      ...favoriteList.map((item) => ({ ...item, quantity: 1 })),
+    ]);
+    setFavoriteList([]);
+  };
   return (
     <div>
-      <h1>Your List</h1>
-      <p>N Item(s)</p>
+      <div>
+        <h1>Your List</h1>
+        {favoriteList.length > 0 && (
+          <p>
+            {favoriteList.length} Item{favoriteList.length > 2 ? "s" : ""}
+          </p>
+        )}
+        {favoriteList.length > 0 && (
+          <button onClick={handleAddAllToCart}>Add all items to cart</button>
+        )}
+      </div>
       <ul>
         {favoriteList.map((item) => {
           return (
             <li key={item.id}>
-              <img src={item.thumbnail} alt="" />
-              <p>{item.title}</p>
+              <img
+                src={item.thumbnail}
+                onClick={() => handleProductDetails(item.id, item.category)}
+                alt={item.title}
+              />
+              <p onClick={() => handleProductDetails(item.id, item.category)}>
+                {item.title}
+              </p>
               <p>${item.price}</p>
-              <button>Add to Cart</button>
-              <button>Save for later</button>
+              {cart.some((product) => product.id === item.id) ? (
+                <div>
+                  <button
+                    onClick={() =>
+                      updateQuantity(
+                        item.id,
+                        (cart.find((product) => product.id === item.id)
+                          ?.quantity || 1) - 1
+                      )
+                    }
+                  >
+                    <FaMinus />
+                  </button>
+                  <span>
+                    {cart.find((product) => product.id === item.id)?.quantity ||
+                      1}
+                  </span>
+                  <button
+                    onClick={() =>
+                      updateQuantity(
+                        item.id,
+                        (cart.find((product) => product.id === item.id)
+                          ?.quantity || 1) + 1
+                      )
+                    }
+                  >
+                    <FaPlus />
+                  </button>
+                </div>
+              ) : (
+                <button onClick={() => handleAddtoCart(item)} type="button">
+                  Add to Cart
+                </button>
+              )}
+
+              <button onClick={() => handleWishList(item)}>
+                {favoriteList.some((favItem) => favItem.id === item.id)
+                  ? "Remove from favorites"
+                  : "Save for later"}
+              </button>
             </li>
           );
         })}

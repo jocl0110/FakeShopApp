@@ -89,24 +89,28 @@ const Cart = ({ prize, quantity, cart, setCart, handleProductDetails }) => {
           </p>
           <div className={`summary ${showSummary ? "show" : "not-show"}`}>
             <table>
-              <tr>
-                <th>
-                  Subtotal({quantity} Item{quantity > 1 ? "s" : ""})
-                </th>
-                <td>${prize}</td>
-              </tr>
-              <tr>
-                <th>Pickup</th>
-                <td>FREE</td>
-              </tr>
-              <tr>
-                <th>Estimated Taxes</th>
-                <td>$0.00</td>
-              </tr>
-              <tr>
-                <th>Total: </th>
-                <td>${prize}</td>
-              </tr>
+              <thead>
+                <tr>
+                  <th>
+                    Subtotal({quantity} Item{quantity > 1 ? "s" : ""})
+                  </th>
+                  <td>${prize}</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Pickup</th>
+                  <td>FREE</td>
+                </tr>
+                <tr>
+                  <th>Estimated Taxes</th>
+                  <td>$0.00</td>
+                </tr>
+                <tr>
+                  <th>Total: </th>
+                  <td>${prize}</td>
+                </tr>
+              </tbody>
             </table>
             <hr />
           </div>
@@ -117,4 +121,5 @@ const Cart = ({ prize, quantity, cart, setCart, handleProductDetails }) => {
   );
 };
 
+// Need to implement a functionality that when someone adds something that it is already in the cart it add 1 to the quantity property
 export default Cart;
