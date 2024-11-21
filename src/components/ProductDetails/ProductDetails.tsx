@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import { FaMinus, FaPlus } from "react-icons/fa";
 import { IoStar } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 
-const ProductDetails = () => {
+const ProductDetails = ({ handleAddtoCart, Cart, updateQuantity }) => {
   const { id } = useParams();
 
   const [productDetails, setProductDetails] = useState({});
@@ -32,7 +33,40 @@ const ProductDetails = () => {
         </p>
         <h3>{productDetails.title}</h3>
         <p>${productDetails.price}</p>
-        <button>Add to Cart</button>
+        {Cart.some((product) => product.id === productDetails.id) ? (
+          <div>
+            <button
+              onClick={() =>
+                updateQuantity(
+                  productDetails.id,
+                  (Cart.find((product) => product.id === productDetails.id)
+                    ?.quantity || 1) - 1
+                )
+              }
+            >
+              <FaMinus />
+            </button>
+            <span>
+              {Cart.find((product) => product.id === productDetails.id)
+                ?.quantity || 1}
+            </span>
+            <button
+              onClick={() =>
+                updateQuantity(
+                  productDetails.id,
+                  (Cart.find((product) => product.id === productDetails.id)
+                    ?.quantity || 1) + 1
+                )
+              }
+            >
+              <FaPlus />
+            </button>
+          </div>
+        ) : (
+          <button onClick={() => handleAddtoCart(productDetails)} type="button">
+            Add to Cart
+          </button>
+        )}
         <div className="about">
           <div>
             About this Item
