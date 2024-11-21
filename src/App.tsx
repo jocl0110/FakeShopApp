@@ -31,6 +31,14 @@ function App() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [url, setUrl] = useState("");
 
+  //Getting total quantity of items in the cart and total price
+  const totalQuantity = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const totalPrice: string = cart
+    .reduce((acc, item) => acc + item.price * item.quantity, 0)
+    .toFixed(2);
+
+  const realTotalPrice: number = parseFloat(totalPrice);
+
   const getData = async (searchParam = "", limit = 100) => {
     try {
       const url = searchParam
@@ -177,7 +185,7 @@ function App() {
                             )}
 
                             <button type="button">
-                              Save it for later
+                              Save for later
                               <CiHeart />
                             </button>
                           </li>
@@ -217,7 +225,15 @@ function App() {
         <Route path="/wishlist" element={<h1>Hello</h1>}></Route>
         <Route
           path="/cart"
-          element={<Cart cart={cart} setCart={setCart} />}
+          element={
+            <Cart
+              handleProductDetails={handleProductDetails}
+              prize={realTotalPrice}
+              quantity={totalQuantity}
+              cart={cart}
+              setCart={setCart}
+            />
+          }
         ></Route>
         <Route
           path="/products/departments/:category/:id"
