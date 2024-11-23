@@ -4,7 +4,15 @@ import "./Cart.css";
 import { RxCross1 } from "react-icons/rx";
 import { TbPointFilled } from "react-icons/tb";
 
-const Cart = ({ prize, quantity, cart, setCart, handleProductDetails }) => {
+const Cart = ({
+  prize,
+  quantity,
+  cart,
+  setCart,
+  handleProductDetails,
+  handleWishList,
+  favoriteList,
+}) => {
   // Callback Functions
 
   const [showSummary, setShowSummary] = useState(false);
@@ -66,7 +74,11 @@ const Cart = ({ prize, quantity, cart, setCart, handleProductDetails }) => {
               <button onClick={() => handleCartRemove(item.id)}>
                 <RxCross1 />
               </button>
-              <button>Save for later</button>
+              <button onClick={() => handleWishList(item)}>
+                {favoriteList.some((favItem) => favItem.id === item.id)
+                  ? "Remove from favorites"
+                  : "Save for later"}
+              </button>
               <button onClick={() => handleDecrement(item.id)}>
                 <FaMinus />
               </button>

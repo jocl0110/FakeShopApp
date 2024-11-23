@@ -10,13 +10,6 @@ const WishList = ({
   updateQuantity,
   setCart,
 }) => {
-  const handleAddAllToCart = () => {
-    setCart((prevState) => [
-      ...prevState,
-      ...favoriteList.map((item) => ({ ...item, quantity: 1 })),
-    ]);
-    setFavoriteList([]);
-  };
   return (
     <div>
       <div>
@@ -25,9 +18,6 @@ const WishList = ({
           <p>
             {favoriteList.length} Item{favoriteList.length > 2 ? "s" : ""}
           </p>
-        )}
-        {favoriteList.length > 0 && (
-          <button onClick={handleAddAllToCart}>Add all items to cart</button>
         )}
       </div>
       <ul>

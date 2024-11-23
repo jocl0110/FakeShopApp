@@ -264,6 +264,8 @@ function App() {
           path="/cart"
           element={
             <Cart
+              favoriteList={favoriteList}
+              handleWishList={handleWishList}
               handleProductDetails={handleProductDetails}
               prize={realTotalPrice}
               quantity={totalQuantity}
