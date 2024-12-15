@@ -286,7 +286,17 @@ function App() {
         ></Route>
         <Route
           path="products/departments/:name"
-          element={<Departments url={url} />}
+          element={
+            <Departments
+              updateQuantity={updateQuantity}
+              cart={cart}
+              handleAddtoCart={handleAddtoCart}
+              handleWishList={handleWishList}
+              favoriteList={favoriteList}
+              url={url}
+              handleProductDetails={handleProductDetails}
+            />
+          }
         >
           {" "}
         </Route>

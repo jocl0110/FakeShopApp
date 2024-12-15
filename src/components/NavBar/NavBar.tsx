@@ -101,9 +101,6 @@ const NavBar = ({ onSearch, setUrl }) => {
               </button>
             </label>
           </li>
-          <li className="sign-in-btn">
-            <FaRegUserCircle /> Sign in
-          </li>
           <li>
             <img
               onClick={handleCart}

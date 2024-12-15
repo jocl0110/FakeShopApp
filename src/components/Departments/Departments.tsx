@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
-import { CiHeart } from "react-icons/ci";
 import { IoStar } from "react-icons/io5";
 import "./Departments.css";
 import { useLocation } from "react-router-dom";
+import { FaMinus, FaPlus } from "react-icons/fa";
 
-const Departments = ({ url }) => {
+const Departments = ({
+  url,
+  handleProductDetails,
+  favoriteList,
+  handleWishList,
+  cart,
+  handleAddtoCart,
+  updateQuantity,
+}) => {
   const [catProducts, setCatProducts] = useState([]);
   const [pathName, setPathName] = useState("");
 
@@ -50,10 +58,44 @@ const Departments = ({ url }) => {
                   </p>
                   <p>${item.price}</p>
                   <p>{item.availabilityStatus}</p>
-                  <button type="button">Add to Cart</button>
-                  <button type="button">
-                    Save it for later
-                    <CiHeart />
+                  {cart.some((product) => product.id === item.id) ? (
+                    <div>
+                      <button
+                        onClick={() =>
+                          updateQuantity(
+                            item.id,
+                            (cart.find((product) => product.id === item.id)
+                              ?.quantity || 1) - 1
+                          )
+                        }
+                      >
+                        <FaMinus />
+                      </button>
+                      <span>
+                        {cart.find((product) => product.id === item.id)
+                          ?.quantity || 1}
+                      </span>
+                      <button
+                        onClick={() =>
+                          updateQuantity(
+                            item.id,
+                            (cart.find((product) => product.id === item.id)
+                              ?.quantity || 1) + 1
+                          )
+                        }
+                      >
+                        <FaPlus />
+                      </button>
+                    </div>
+                  ) : (
+                    <button onClick={() => handleAddtoCart(item)} type="button">
+                      Add to Cart
+                    </button>
+                  )}
+                  <button type="button" onClick={() => handleWishList(item)}>
+                    {favoriteList.some((favItem) => favItem.id === item.id)
+                      ? "Remove from favorites"
+                      : "Save for later"}
                   </button>
                 </li>
               );
