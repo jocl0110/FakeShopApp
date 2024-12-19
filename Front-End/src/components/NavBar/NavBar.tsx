@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import "./NavBar.css";
 import { useNavigate } from "react-router-dom";
-import { FaRegUserCircle } from "react-icons/fa";
 
-const NavBar = ({ onSearch, setUrl }) => {
+const NavBar = ({ onSearch }) => {
   const [categories, setCategories] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchParam, setSearchParam] = useState("");
@@ -11,10 +10,10 @@ const NavBar = ({ onSearch, setUrl }) => {
   useEffect(() => {
     async function getData() {
       try {
-        const res = await fetch("https://dummyjson.com/products/categories");
+        const res = await fetch("api/products/categories");
         const data = await res.json();
 
-        setCategories(data);
+        setCategories(data.data);
       } catch (e) {
         console.log(e);
       }
@@ -46,9 +45,8 @@ const NavBar = ({ onSearch, setUrl }) => {
   const handleWishList = () => {
     navigate("/wishlist");
   };
-  const handleDepartments = (url, name) => {
-    navigate(`products/departments/${name}`);
-    setUrl(url);
+  const handleDepartments = (name) => {
+    navigate(`products/departments/${name.toLowerCase().replace(/\s+/g, "-")}`);
   };
 
   return (
@@ -75,11 +73,8 @@ const NavBar = ({ onSearch, setUrl }) => {
                   {categories &&
                     categories.map((cat) => {
                       return (
-                        <li
-                          onClick={() => handleDepartments(cat.url, cat.slug)}
-                          key={cat.name}
-                        >
-                          {cat.name}
+                        <li onClick={() => handleDepartments(cat)} key={cat}>
+                          {cat}
                         </li>
                       );
                     })}

@@ -15,10 +15,10 @@ import WishList from "./components/WishList/WishList";
 
 // Types
 interface ProductType {
-  id: string;
+  _id: string;
   category: string;
-  thumbnail: string;
-  title: string;
+  image: string;
+  name: string;
   price: number;
   rating: number;
   availabilityStatus: string;
@@ -31,7 +31,6 @@ function App() {
   const [cart, setCart] = useState<ProductType[]>([]);
   const [favoriteList, setFavoriteList] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [url, setUrl] = useState("");
 
   //Getting total quantity of items in the cart and total price
   const totalQuantity = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -41,14 +40,14 @@ function App() {
 
   const realTotalPrice: number = parseFloat(totalPrice);
 
-  const getData = async (searchParam = "", limit = 100) => {
+  const getData = async (searchParam = "") => {
     try {
       const url = searchParam
-        ? `https://dummyjson.com/products/search?q=${searchParam}&limit=${limit}`
-        : `https://dummyjson.com/products?limit=${limit}`;
+        ? "api/products?search=" + searchParam
+        : "api/products";
       const res = await fetch(url);
       const data = await res.json();
-      setData(data.products);
+      setData(data.data);
     } catch (e) {
       console.log(e);
     }
@@ -62,15 +61,16 @@ function App() {
     getCurrentId: string,
     getCurrentCategory: string
   ) => {
-    console.log(getCurrentId);
     navigate(`/products/departments/${getCurrentCategory}/${getCurrentId}`);
   };
   const handleAddtoCart = (getItem: ProductType) => {
     setCart((prevCart) => {
-      const itemInCart = prevCart.find((product) => product.id === getItem.id);
+      const itemInCart = prevCart.find(
+        (product) => product._id === getItem._id
+      );
       if (itemInCart) {
         return prevCart.map((product) => {
-          product.id === getItem.id
+          product._id === getItem._id
             ? { ...product, quantity: (product.quantity || 1) + 1 }
             : product;
         });
@@ -82,10 +82,10 @@ function App() {
   const updateQuantity = (id: string, quantity: number) => {
     setCart((prevCart) => {
       if (quantity <= 0) {
-        return prevCart.filter((product) => product.id !== id);
+        return prevCart.filter((product) => product._id !== id);
       }
       return prevCart.map((product) =>
-        product.id === id ? { ...product, quantity } : product
+        product._id === id ? { ...product, quantity } : product
       );
     });
   };
@@ -95,7 +95,7 @@ function App() {
 
     let favoriteListCopy = [...favoriteList];
     const index = favoriteListCopy.findIndex((item) => {
-      return item.id === getCurrentItem.id;
+      return item._id === getCurrentItem._id;
     });
     if (index === -1) {
       favoriteListCopy.push(getCurrentItem);
@@ -125,7 +125,7 @@ function App() {
 
   return (
     <>
-      <NavBar setUrl={setUrl} onSearch={getData} />
+      <NavBar onSearch={getData} />
       <Routes>
         <Route
           path="/"
@@ -138,14 +138,14 @@ function App() {
                     {currentProducts && currentProducts.length > 0 ? (
                       currentProducts.map((item) => {
                         return (
-                          <li key={item.id}>
+                          <li key={item._id}>
                             <img
                               onClick={() =>
-                                handleProductDetails(item.id, item.category)
+                                handleProductDetails(item._id, item.category)
                               }
                               style={{ width: "200px", height: "auto" }}
-                              src={item.thumbnail}
-                              alt={item.title}
+                              src={item.image}
+                              alt={item.name}
                             />
                             <p>
                               <IoStar />
@@ -153,21 +153,23 @@ function App() {
                             </p>
                             <p
                               onClick={() =>
-                                handleProductDetails(item.id, item.category)
+                                handleProductDetails(item._id, item.category)
                               }
                             >
-                              {item.title}
+                              {item.name}
                             </p>
                             <p>${item.price}</p>
                             <p>{item.availabilityStatus}</p>
-                            {cart.some((product) => product.id === item.id) ? (
+                            {cart.some(
+                              (product) => product._id === item._id
+                            ) ? (
                               <div>
                                 <button
                                   onClick={() =>
                                     updateQuantity(
-                                      item.id,
+                                      item._id,
                                       (cart.find(
-                                        (product) => product.id === item.id
+                                        (product) => product._id === item._id
                                       )?.quantity || 1) - 1
                                     )
                                   }
@@ -176,15 +178,15 @@ function App() {
                                 </button>
                                 <span>
                                   {cart.find(
-                                    (product) => product.id === item.id
+                                    (product) => product._id === item._id
                                   )?.quantity || 1}
                                 </span>
                                 <button
                                   onClick={() =>
                                     updateQuantity(
-                                      item.id,
+                                      item._id,
                                       (cart.find(
-                                        (product) => product.id === item.id
+                                        (product) => product._id === item._id
                                       )?.quantity || 1) + 1
                                     )
                                   }
@@ -206,7 +208,7 @@ function App() {
                               onClick={() => handleWishList(item)}
                             >
                               {favoriteList.some(
-                                (favItem) => favItem.id === item.id
+                                (favItem) => favItem._id === item._id
                               )
                                 ? "Remove from favorites"
                                 : "Save for later"}
@@ -293,7 +295,6 @@ function App() {
               handleAddtoCart={handleAddtoCart}
               handleWishList={handleWishList}
               favoriteList={favoriteList}
-              url={url}
               handleProductDetails={handleProductDetails}
             />
           }

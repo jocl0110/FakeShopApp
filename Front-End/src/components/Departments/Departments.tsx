@@ -5,7 +5,6 @@ import { useLocation } from "react-router-dom";
 import { FaMinus, FaPlus } from "react-icons/fa";
 
 const Departments = ({
-  url,
   handleProductDetails,
   favoriteList,
   handleWishList,
@@ -17,13 +16,13 @@ const Departments = ({
   const [pathName, setPathName] = useState("");
 
   const location = useLocation().pathname;
-  console.log(location);
-
+  const category = location.split("/")[3] || "accessories";
+  const url = `/api/products/categories/${category}`;
   const fetchDepartmentProducts = async () => {
     try {
       const res = await fetch(url);
       const data = await res.json();
-      setCatProducts(data.products);
+      setCatProducts(data.data);
     } catch (error) {
       console.log(error);
     }
@@ -32,39 +31,38 @@ const Departments = ({
   useEffect(() => {
     fetchDepartmentProducts();
     setPathName(location);
-  }, [url, pathName]);
+  }, [pathName, url]);
   return (
     <div>
-      <div>{pathName}</div>
+      <div>{pathName.toLowerCase()}</div>
       <div>
         <ul className="product-by-department-ul">
           {catProducts &&
             catProducts.length > 0 &&
             catProducts.map((item) => {
               return (
-                <li key={item.id}>
+                <li key={item._id}>
                   <img
                     onClick={() => handleProductDetails(item.id)}
                     style={{ width: "200px", height: "auto" }}
-                    src={item.thumbnail}
-                    alt={item.title}
+                    src={item.image}
+                    alt={item.name}
                   />
                   <p>
                     <IoStar />
                     {item.rating}
                   </p>
                   <p onClick={() => handleProductDetails(item.id)}>
-                    {item.title}
+                    {item.name}
                   </p>
                   <p>${item.price}</p>
-                  <p>{item.availabilityStatus}</p>
-                  {cart.some((product) => product.id === item.id) ? (
+                  {cart.some((product) => product._id === item._id) ? (
                     <div>
                       <button
                         onClick={() =>
                           updateQuantity(
-                            item.id,
-                            (cart.find((product) => product.id === item.id)
+                            item._id,
+                            (cart.find((product) => product._id === item._id)
                               ?.quantity || 1) - 1
                           )
                         }
@@ -72,14 +70,14 @@ const Departments = ({
                         <FaMinus />
                       </button>
                       <span>
-                        {cart.find((product) => product.id === item.id)
+                        {cart.find((product) => product._id === item._id)
                           ?.quantity || 1}
                       </span>
                       <button
                         onClick={() =>
                           updateQuantity(
-                            item.id,
-                            (cart.find((product) => product.id === item.id)
+                            item._id,
+                            (cart.find((product) => product._id === item._id)
                               ?.quantity || 1) + 1
                           )
                         }
@@ -93,7 +91,7 @@ const Departments = ({
                     </button>
                   )}
                   <button type="button" onClick={() => handleWishList(item)}>
-                    {favoriteList.some((favItem) => favItem.id === item.id)
+                    {favoriteList.some((favItem) => favItem.id === item._id)
                       ? "Remove from favorites"
                       : "Save for later"}
                   </button>
