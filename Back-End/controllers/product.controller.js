@@ -33,8 +33,9 @@ export const getSingleProduct = async (req, res) => {
 export const getProductsByCategory = async (req, res) => {
   try {
     const { category } = req.params;
+    const decodedCategory = category.replace(/-/g, " ");
     const productsByCategory = await Product.find({
-      category: { $regex: category, $options: "i" },
+      category: { $regex: decodedCategory, $options: "i" },
     });
     res.status(201).json({ success: true, data: productsByCategory });
   } catch (error) {
