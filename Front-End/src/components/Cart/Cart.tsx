@@ -21,7 +21,7 @@ const Cart = ({
     setCart((prevCart) =>
       prevCart
         .map((item) =>
-          item.id === itemId && item.quantity > 0
+          item._id === itemId && item.quantity > 0
             ? { ...item, quantity: item.quantity - 1 }
             : item
         )
@@ -32,7 +32,7 @@ const Cart = ({
   const handleIncrement = (itemId) => {
     setCart((prevState) =>
       prevState.map((item) => {
-        return item.id === itemId
+        return item._id === itemId
           ? { ...item, quantity: item.quantity + 1 }
           : item;
       })
@@ -40,7 +40,7 @@ const Cart = ({
   };
   const handleCartRemove = (itemId) => {
     const newCart = cart.filter((item) => {
-      return item.id !== itemId;
+      return item._id !== itemId;
     });
     setCart(newCart);
   };
@@ -61,29 +61,29 @@ const Cart = ({
       {cart.length > 0 ? (
         <ul>
           {cart.map((item) => (
-            <li key={item.id}>
+            <li key={item._id}>
               <img
                 onClick={() => handleProductDetails(item.id)}
-                src={item.thumbnail}
-                alt={item.title}
+                src={item.image}
+                alt={item.name}
                 style={{ width: "100px", height: "auto" }}
               />
-              <p onClick={() => handleProductDetails(item.id)}>{item.title}</p>
+              <p onClick={() => handleProductDetails(item._id)}>{item.name}</p>
               <p>${item.price}</p>
 
-              <button onClick={() => handleCartRemove(item.id)}>
+              <button onClick={() => handleCartRemove(item._id)}>
                 <RxCross1 />
               </button>
               <button onClick={() => handleWishList(item)}>
-                {favoriteList.some((favItem) => favItem.id === item.id)
+                {favoriteList.some((favItem) => favItem._id === item._id)
                   ? "Remove from favorites"
                   : "Save for later"}
               </button>
-              <button onClick={() => handleDecrement(item.id)}>
+              <button onClick={() => handleDecrement(item._id)}>
                 <FaMinus />
               </button>
               <span>{item.quantity}</span>
-              <button onClick={() => handleIncrement(item.id)}>
+              <button onClick={() => handleIncrement(item._id)}>
                 <FaPlus />
               </button>
             </li>

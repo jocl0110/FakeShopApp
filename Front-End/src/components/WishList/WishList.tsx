@@ -23,23 +23,24 @@ const WishList = ({
       <ul>
         {favoriteList.map((item) => {
           return (
-            <li key={item.id}>
+            <li key={item._id}>
               <img
-                src={item.thumbnail}
-                onClick={() => handleProductDetails(item.id, item.category)}
+                src={item.image}
+                onClick={() => handleProductDetails(item._id, item.category)}
                 alt={item.title}
+                style={{ width: "200px", height: "auto" }}
               />
-              <p onClick={() => handleProductDetails(item.id, item.category)}>
-                {item.title}
+              <p onClick={() => handleProductDetails(item._id, item.category)}>
+                {item.name}
               </p>
               <p>${item.price}</p>
-              {cart.some((product) => product.id === item.id) ? (
+              {cart.some((product) => product._id === item._id) ? (
                 <div>
                   <button
                     onClick={() =>
                       updateQuantity(
                         item.id,
-                        (cart.find((product) => product.id === item.id)
+                        (cart.find((product) => product._id === item._id)
                           ?.quantity || 1) - 1
                       )
                     }
@@ -47,14 +48,14 @@ const WishList = ({
                     <FaMinus />
                   </button>
                   <span>
-                    {cart.find((product) => product.id === item.id)?.quantity ||
-                      1}
+                    {cart.find((product) => product._id === item._id)
+                      ?.quantity || 1}
                   </span>
                   <button
                     onClick={() =>
                       updateQuantity(
                         item.id,
-                        (cart.find((product) => product.id === item.id)
+                        (cart.find((product) => product._id === item._id)
                           ?.quantity || 1) + 1
                       )
                     }
@@ -69,7 +70,7 @@ const WishList = ({
               )}
 
               <button onClick={() => handleWishList(item)}>
-                {favoriteList.some((favItem) => favItem.id === item.id)
+                {favoriteList.some((favItem) => favItem._id === item._id)
                   ? "Remove from favorites"
                   : "Save for later"}
               </button>
