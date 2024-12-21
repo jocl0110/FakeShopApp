@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import "./NavBar.css";
 import { useNavigate } from "react-router-dom";
+import { MdOutlineSearch } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
+import { CiShoppingCart } from "react-icons/ci";
 
 const NavBar = ({ onSearch }) => {
   const [categories, setCategories] = useState([]);
@@ -58,18 +61,30 @@ const NavBar = ({ onSearch }) => {
               onClick={handleHome}
               src="src/assets/store.png"
               alt="store-icon"
-              style={{ width: "50px" }}
+              className="store-icon"
             />
           </li>
-          <li>
+          <li className="search">
+            <input
+              className="search-input"
+              value={searchParam}
+              type="text"
+              placeholder="Search for an item"
+              onChange={handleChange}
+            />{" "}
+            <MdOutlineSearch id="search-btn" onClick={handleSearch} />
+          </li>
+          <li className="departments">
             <div className="dept-dropdown">
-              <div onClick={handleShow}>Departments</div>
+              <div className="dropdown-div-btn" onClick={handleShow}>
+                Departments
+              </div>
               <div
                 className={
                   showDropdown ? "show-dept-dropdown" : "hidden-dept-dropdown"
                 }
               >
-                <ul>
+                <ul className="dept-list">
                   {categories &&
                     categories.map((cat) => {
                       return (
@@ -82,26 +97,17 @@ const NavBar = ({ onSearch }) => {
               </div>
             </div>
           </li>
-          <li onClick={handleWishList}>Wish List</li>
-          <li>
-            <label>
-              <input
-                value={searchParam}
-                type="text"
-                placeholder="Search for an item"
-                onChange={handleChange}
-              />{" "}
-              <button type="submit" onClick={handleSearch}>
-                Search
-              </button>
-            </label>
+          <li onClick={handleWishList} className="wishlist">
+            Wish List
+          </li>
+          <li className="sign-in">
+            <FaUser />
+            Sign In
           </li>
           <li>
-            <img
+            <CiShoppingCart
               onClick={handleCart}
-              style={{ width: "35px" }}
-              src="src/assets/cart-shopping-solid.svg"
-              alt="cart icon"
+              style={{ width: "35px", fontSize: "2.5rem" }}
             />
           </li>
         </ul>
