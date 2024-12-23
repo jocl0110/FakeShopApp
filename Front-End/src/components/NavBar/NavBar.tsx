@@ -5,7 +5,7 @@ import { MdOutlineSearch } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { CiShoppingCart } from "react-icons/ci";
 
-const NavBar = ({ onSearch }) => {
+const NavBar = ({ onSearch, handleSignIn }) => {
   const [categories, setCategories] = useState([]);
   const [showDropdown, setShowDropdown] = useState({
     departments: false,
@@ -121,7 +121,7 @@ const NavBar = ({ onSearch }) => {
               }
             >
               <ul>
-                <li>Sign in or Create an account</li>
+                <li onClick={handleSignIn}>Sign in or Create an account</li>
                 <li>Purchase History</li>
               </ul>
             </div>
