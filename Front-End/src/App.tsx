@@ -12,6 +12,7 @@ import { GrFormPrevious } from "react-icons/gr";
 import Departments from "./components/Departments/Departments";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import WishList from "./components/WishList/WishList";
+import SignIn from "./components/Sign-In/SignIn";
 
 // Types
 interface ProductType {
@@ -301,6 +302,7 @@ function App() {
         >
           {" "}
         </Route>
+        <Route path="" element={<SignIn />}></Route>
       </Routes>
     </>
   );

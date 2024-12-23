@@ -7,7 +7,10 @@ import { CiShoppingCart } from "react-icons/ci";
 
 const NavBar = ({ onSearch }) => {
   const [categories, setCategories] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showDropdown, setShowDropdown] = useState({
+    departments: false,
+    signIn: false,
+  });
   const [searchParam, setSearchParam] = useState("");
 
   useEffect(() => {
@@ -23,8 +26,11 @@ const NavBar = ({ onSearch }) => {
     }
     getData();
   }, []);
-  const handleShow = () => {
-    setShowDropdown((prevState) => !prevState);
+  const toggleDropdown = (type) => {
+    setShowDropdown((prevState) => ({
+      ...prevState,
+      [type]: !prevState[type],
+    }));
   };
 
   const navigate = useNavigate();
@@ -51,7 +57,6 @@ const NavBar = ({ onSearch }) => {
   const handleDepartments = (name) => {
     navigate(`products/departments/${name.toLowerCase().replace(/\s+/g, "-")}`);
   };
-
   return (
     <header>
       <nav>
@@ -76,12 +81,17 @@ const NavBar = ({ onSearch }) => {
           </li>
           <li className="departments">
             <div className="dept-dropdown">
-              <div className="dropdown-div-btn" onClick={handleShow}>
+              <div
+                className="dropdown-div-btn"
+                onClick={() => toggleDropdown("departments")}
+              >
                 Departments
               </div>
               <div
                 className={
-                  showDropdown ? "show-dept-dropdown" : "hidden-dept-dropdown"
+                  showDropdown.departments
+                    ? "show-dept-dropdown"
+                    : "hidden-dept-dropdown"
                 }
               >
                 <ul className="dept-list">
@@ -100,9 +110,21 @@ const NavBar = ({ onSearch }) => {
           <li onClick={handleWishList} className="wishlist">
             Wish List
           </li>
-          <li className="sign-in">
+          <li className="sign-in" onClick={() => toggleDropdown("signIn")}>
             <FaUser />
-            Sign In
+            <p>Sign In</p>
+            <div
+              className={
+                showDropdown.signIn
+                  ? "sign-in-dropdown"
+                  : "sign-in-dropdown-hidden"
+              }
+            >
+              <ul>
+                <li>Sign in or Create an account</li>
+                <li>Purchase History</li>
+              </ul>
+            </div>
           </li>
           <li>
             <CiShoppingCart

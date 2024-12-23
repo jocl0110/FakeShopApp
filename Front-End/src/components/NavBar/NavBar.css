@@ -95,12 +95,14 @@ nav > ul > li {
   background-color: #333;
 }
 .dropdown-div-btn {
-  padding: 24px;
+  padding: 1rem 1.25rem;
+  border-radius: 2rem;
   border: none;
   cursor: pointer;
 }
 .wishlist {
-  padding: 24px;
+  padding: 1rem 1.25rem;
+  border-radius: 2rem;
   border: none;
   cursor: pointer;
 }
@@ -112,4 +114,46 @@ nav > ul > li {
 .dropdown-div-btn:focus {
   background-color: #555;
   transition: ease 0.3s;
+}
+
+.sign-in {
+  position: relative;
+  cursor: pointer;
+  padding: 1rem 1.25rem;
+  border-radius: 2rem;
+}
+.sign-in:hover {
+  background-color: #555;
+  transition: ease 0.3s;
+}
+.sign-in-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: block;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.sign-in-dropdown > ul {
+  list-style: none;
+  background-color: #222;
+  color: #fff;
+  min-width: 16px;
+  padding: 12px 16px;
+}
+.sign-in-dropdown > ul > li {
+  text-align: center;
+  width: 100%;
+  cursor: pointer;
+  padding: 1rem 1.5rem;
+}
+.sign-in-dropdown > ul > li:hover {
+  background-color: #555;
+}
+.sign-in-dropdown > ul > li:focus {
+  background-color: #555;
+  outline: none;
+}
+
+.sign-in-dropdown-hidden {
+  display: none;
 }
