@@ -122,7 +122,7 @@ nav > ul > li {
   padding: 1rem 1.25rem;
   border-radius: 2rem;
 }
-.sign-in:hover {
+.sign-in:hover:not(:has(.sign-in-dropdown:hover)) {
   background-color: #555;
   transition: ease 0.3s;
 }
@@ -130,7 +130,10 @@ nav > ul > li {
   position: absolute;
   top: 100%;
   left: 0;
+  opacity: 1;
+  pointer-events: auto;
   display: block;
+  z-index: 10;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .sign-in-dropdown > ul {
@@ -138,20 +141,18 @@ nav > ul > li {
   background-color: #222;
   color: #fff;
   min-width: 16px;
+  cursor: pointer;
+  border-radius: 8px;
   padding: 12px 16px;
 }
 .sign-in-dropdown > ul > li {
-  text-align: center;
-  width: 100%;
-  cursor: pointer;
-  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  width: fit-content;
+  margin: 0;
+  padding: 0.5rem 1rem;
 }
 .sign-in-dropdown > ul > li:hover {
-  background-color: #555;
-}
-.sign-in-dropdown > ul > li:focus {
-  background-color: #555;
-  outline: none;
+  text-decoration: underline;
 }
 
 .sign-in-dropdown-hidden {

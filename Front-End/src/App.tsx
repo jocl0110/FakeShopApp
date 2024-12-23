@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
 import Footer from "./components/Footer/Footer";
 import Cart from "./components/Cart/Cart";
@@ -13,6 +13,7 @@ import Departments from "./components/Departments/Departments";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import WishList from "./components/WishList/WishList";
 import SignIn from "./components/Sign-In/SignIn";
+import SignUp from "./components/Sign-Up/SignUp";
 
 // Types
 interface ProductType {
@@ -123,10 +124,22 @@ function App() {
       setCurrentSlide((prevState) => prevState - 1);
     }
   };
+  const handleSignIn = () => {
+    navigate("/signin");
+  };
+  const handleSignUp = () => {
+    navigate("/signup");
+  };
+  const location = useLocation();
+
+  const noNavBar = ["/signin", "/signup"];
 
   return (
     <>
-      <NavBar onSearch={getData} />
+      {!noNavBar.includes(location.pathname) && (
+        <NavBar handleSignIn={handleSignIn} onSearch={getData} />
+      )}
+
       <Routes>
         <Route
           path="/"
@@ -302,7 +315,11 @@ function App() {
         >
           {" "}
         </Route>
-        <Route path="" element={<SignIn />}></Route>
+        <Route
+          path="/signin"
+          element={<SignIn handleSignUp={handleSignUp} />}
+        ></Route>
+        <Route path="/signup" element={<SignUp />}></Route>
       </Routes>
     </>
   );
