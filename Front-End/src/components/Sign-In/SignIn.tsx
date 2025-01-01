@@ -1,6 +1,6 @@
 import Footer from "../Footer/Footer";
 
-const SignIn = ({ handleSignUp }) => {
+const SignIn = ({ handleSignUp, handleHome }) => {
   return (
     <div>
       <div>
@@ -14,6 +14,7 @@ const SignIn = ({ handleSignUp }) => {
             Create your Account
           </button>
         </form>
+        <button onClick={handleHome}>Home</button>
       </div>
       <Footer />
     </div>

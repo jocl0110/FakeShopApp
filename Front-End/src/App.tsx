@@ -14,6 +14,7 @@ import { FaMinus, FaPlus } from "react-icons/fa";
 import WishList from "./components/WishList/WishList";
 import SignIn from "./components/Sign-In/SignIn";
 import SignUp from "./components/Sign-Up/SignUp";
+import Dashboard from "./components/Dashboard/Dashboard";
 
 // Types
 interface ProductType {
@@ -130,6 +131,12 @@ function App() {
   const handleSignUp = () => {
     navigate("/signup");
   };
+  const handleDashboard = () => {
+    navigate("/dashboard");
+  };
+  const handleHome = () => {
+    navigate("/");
+  };
   const location = useLocation();
 
   const noNavBar = ["/signin", "/signup"];
@@ -137,7 +144,12 @@ function App() {
   return (
     <>
       {!noNavBar.includes(location.pathname) && (
-        <NavBar handleSignIn={handleSignIn} onSearch={getData} />
+        <NavBar
+          handleHome={handleHome}
+          handleDashboard={handleDashboard}
+          handleSignIn={handleSignIn}
+          onSearch={getData}
+        />
       )}
 
       <Routes>
@@ -146,14 +158,14 @@ function App() {
           element={
             <>
               <main>
-                <div></div>
                 <div>
                   <ul className="products-grid">
                     {currentProducts && currentProducts.length > 0 ? (
                       currentProducts.map((item) => {
                         return (
-                          <li key={item._id}>
+                          <li className="product-card" key={item._id}>
                             <img
+                              className="product-image"
                               onClick={() =>
                                 handleProductDetails(item._id, item.category)
                               }
@@ -161,72 +173,82 @@ function App() {
                               src={item.image}
                               alt={item.name}
                             />
-                            <p>
-                              <IoStar />
-                              {item.rating}
-                            </p>
-                            <p
-                              onClick={() =>
-                                handleProductDetails(item._id, item.category)
-                              }
-                            >
-                              {item.name}
-                            </p>
-                            <p>${item.price}</p>
-                            <p>{item.availabilityStatus}</p>
-                            {cart.some(
-                              (product) => product._id === item._id
-                            ) ? (
-                              <div>
-                                <button
-                                  onClick={() =>
-                                    updateQuantity(
-                                      item._id,
-                                      (cart.find(
-                                        (product) => product._id === item._id
-                                      )?.quantity || 1) - 1
-                                    )
-                                  }
-                                >
-                                  <FaMinus />
-                                </button>
-                                <span>
-                                  {cart.find(
-                                    (product) => product._id === item._id
-                                  )?.quantity || 1}
-                                </span>
-                                <button
-                                  onClick={() =>
-                                    updateQuantity(
-                                      item._id,
-                                      (cart.find(
-                                        (product) => product._id === item._id
-                                      )?.quantity || 1) + 1
-                                    )
-                                  }
-                                >
-                                  <FaPlus />
-                                </button>
-                              </div>
-                            ) : (
-                              <button
-                                onClick={() => handleAddtoCart(item)}
-                                type="button"
-                              >
-                                Add to Cart
-                              </button>
-                            )}
+                            <div className="product-info">
+                              <p className="product-rating">
+                                <IoStar />
+                                {item.rating}
+                              </p>
 
-                            <button
-                              type="button"
-                              onClick={() => handleWishList(item)}
-                            >
-                              {favoriteList.some(
-                                (favItem) => favItem._id === item._id
-                              )
-                                ? "Remove from favorites"
-                                : "Save for later"}
-                            </button>
+                              <p
+                                className="product-name"
+                                onClick={() =>
+                                  handleProductDetails(item._id, item.category)
+                                }
+                              >
+                                {item.name}
+                              </p>
+                            </div>
+                            <div className="product-action">
+                              <p className="product-price">
+                                <span className="currency">US$</span>{" "}
+                                {item.price}
+                              </p>
+                              {cart.some(
+                                (product) => product._id === item._id
+                              ) ? (
+                                <div className="quantity-btns-container">
+                                  <button
+                                    onClick={() =>
+                                      updateQuantity(
+                                        item._id,
+                                        (cart.find(
+                                          (product) => product._id === item._id
+                                        )?.quantity || 1) - 1
+                                      )
+                                    }
+                                  >
+                                    <FaMinus />
+                                  </button>
+                                  <span>
+                                    {cart.find(
+                                      (product) => product._id === item._id
+                                    )?.quantity || 1}
+                                  </span>
+                                  <button
+                                    onClick={() =>
+                                      updateQuantity(
+                                        item._id,
+                                        (cart.find(
+                                          (product) => product._id === item._id
+                                        )?.quantity || 1) + 1
+                                      )
+                                    }
+                                  >
+                                    <FaPlus />
+                                  </button>
+                                </div>
+                              ) : (
+                                <button
+                                  className="add-to-cart-btn"
+                                  onClick={() => handleAddtoCart(item)}
+                                  type="button"
+                                >
+                                  Add to Cart
+                                </button>
+                              )}
+
+                              <button
+                                className="wishlist-btn"
+                                type="button"
+                                onClick={() => handleWishList(item)}
+                              >
+                                {favoriteList.some(
+                                  (favItem) => favItem._id === item._id
+                                )
+                                  ? "Remove from favorites"
+                                  : "Save for later"}
+                              </button>
+                            </div>
                           </li>
                         );
                       })
@@ -317,9 +339,20 @@ function App() {
         </Route>
         <Route
           path="/signin"
-          element={<SignIn handleSignUp={handleSignUp} />}
+          element={
+            <SignIn handleHome={handleHome} handleSignUp={handleSignUp} />
+          }
         ></Route>
-        <Route path="/signup" element={<SignUp />}></Route>
+        <Route
+          path="/signup"
+          element={
+            <SignUp handleSignIn={handleSignIn} handleHome={handleHome} />
+          }
+        ></Route>
+        <Route
+          path="/dashboard"
+          element={<Dashboard handleHome={handleHome} />}
+        ></Route>
       </Routes>
     </>
   );

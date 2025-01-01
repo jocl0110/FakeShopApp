@@ -5,7 +5,7 @@ import { MdOutlineSearch } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { CiShoppingCart } from "react-icons/ci";
 
-const NavBar = ({ onSearch, handleSignIn }) => {
+const NavBar = ({ onSearch, handleSignIn, handleDashboard, handleHome }) => {
   const [categories, setCategories] = useState([]);
   const [showDropdown, setShowDropdown] = useState({
     departments: false,
@@ -34,9 +34,6 @@ const NavBar = ({ onSearch, handleSignIn }) => {
   };
 
   const navigate = useNavigate();
-  const handleHome = () => {
-    navigate("/");
-  };
 
   const handleCart = () => {
     navigate("/cart");
@@ -79,59 +76,62 @@ const NavBar = ({ onSearch, handleSignIn }) => {
             />{" "}
             <MdOutlineSearch id="search-btn" onClick={handleSearch} />
           </li>
-          <li className="departments">
-            <div className="dept-dropdown">
-              <div
-                className="dropdown-div-btn"
-                onClick={() => toggleDropdown("departments")}
-              >
-                Departments
+          <div className="right-items">
+            <li className="departments">
+              <div className="dept-dropdown">
+                <div
+                  className="dropdown-div-btn"
+                  onClick={() => toggleDropdown("departments")}
+                >
+                  Departments
+                </div>
+                <div
+                  className={
+                    showDropdown.departments
+                      ? "show-dept-dropdown"
+                      : "hidden-dept-dropdown"
+                  }
+                >
+                  <div className="dept-list">
+                    {categories &&
+                      categories.map((cat) => {
+                        return (
+                          <p onClick={() => handleDepartments(cat)} key={cat}>
+                            {cat}
+                          </p>
+                        );
+                      })}
+                  </div>
+                </div>
               </div>
+            </li>
+            <li onClick={handleWishList} className="wishlist">
+              Wish List
+            </li>
+            <li className="sign-in" onClick={() => toggleDropdown("signIn")}>
+              <FaUser />
+              <p>Sign In</p>
               <div
                 className={
-                  showDropdown.departments
-                    ? "show-dept-dropdown"
-                    : "hidden-dept-dropdown"
+                  showDropdown.signIn
+                    ? "sign-in-dropdown"
+                    : "sign-in-dropdown-hidden"
                 }
               >
-                <ul className="dept-list">
-                  {categories &&
-                    categories.map((cat) => {
-                      return (
-                        <li onClick={() => handleDepartments(cat)} key={cat}>
-                          {cat}
-                        </li>
-                      );
-                    })}
+                <ul>
+                  <li onClick={handleSignIn}>Sign in or Create an account</li>
+                  <li onClick={handleDashboard}>Purchase History</li>
                 </ul>
               </div>
-            </div>
-          </li>
-          <li onClick={handleWishList} className="wishlist">
-            Wish List
-          </li>
-          <li className="sign-in" onClick={() => toggleDropdown("signIn")}>
-            <FaUser />
-            <p>Sign In</p>
-            <div
-              className={
-                showDropdown.signIn
-                  ? "sign-in-dropdown"
-                  : "sign-in-dropdown-hidden"
-              }
-            >
-              <ul>
-                <li onClick={handleSignIn}>Sign in or Create an account</li>
-                <li>Purchase History</li>
-              </ul>
-            </div>
-          </li>
-          <li>
-            <CiShoppingCart
-              onClick={handleCart}
-              style={{ width: "35px", fontSize: "2.5rem" }}
-            />
-          </li>
+            </li>
+            <li>
+              <CiShoppingCart
+                className="cart-icon"
+                onClick={handleCart}
+                style={{ width: "35px", fontSize: "2.5rem" }}
+              />
+            </li>
+          </div>
         </ul>
       </nav>
     </header>
