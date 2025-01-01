@@ -1,6 +1,6 @@
 import Footer from "../Footer/Footer";
 
-function SignUp() {
+function SignUp({ handleHome, handleSignIn }) {
   return (
     <div>
       <div>
@@ -16,8 +16,11 @@ function SignUp() {
           <label htmlFor="password">Confirm Password:</label>
           <input type="password" id="password" name="password" />
           <button type="submit">Sign Up</button>
-          <button type="submit">Or sign in</button>
+          <button type="submit" onClick={handleSignIn}>
+            Or sign in
+          </button>
         </form>
+        <button onClick={handleHome}>Home</button>
       </div>
       <Footer />
     </div>
