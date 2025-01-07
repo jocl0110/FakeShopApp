@@ -15,6 +15,7 @@ import WishList from "./components/WishList/WishList";
 import SignIn from "./components/Sign-In/SignIn";
 import SignUp from "./components/Sign-Up/SignUp";
 import Dashboard from "./components/Dashboard/Dashboard";
+import Settings from "./components/Settings/Settings";
 
 // Types
 interface ProductType {
@@ -136,6 +137,9 @@ function App() {
   };
   const handleHome = () => {
     navigate("/");
+  };
+  const handleSettings = () => {
+    navigate("/settings");
   };
   const location = useLocation();
 
@@ -351,8 +355,14 @@ function App() {
         ></Route>
         <Route
           path="/dashboard"
-          element={<Dashboard handleHome={handleHome} />}
+          element={
+            <Dashboard
+              handleHome={handleHome}
+              handleSettings={handleSettings}
+            />
+          }
         ></Route>
+        <Route path="/settings" element={<Settings />}></Route>
       </Routes>
     </>
   );
