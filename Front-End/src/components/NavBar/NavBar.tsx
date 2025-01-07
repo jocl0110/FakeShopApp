@@ -120,7 +120,7 @@ const NavBar = ({ onSearch, handleSignIn, handleDashboard, handleHome }) => {
               >
                 <ul>
                   <li onClick={handleSignIn}>Sign in or Create an account</li>
-                  <li onClick={handleDashboard}>Purchase History</li>
+                  <li onClick={handleDashboard}>Account</li>
                 </ul>
               </div>
             </li>

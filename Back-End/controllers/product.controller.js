@@ -1,4 +1,7 @@
 import Product from "../models/product.model.js";
+import bcrypt from "bcrypt";
+import User from "../models/user.model.js";
+import { validateUser } from "../models/user.model.js";
 
 //!  GET METHODS
 export const getAllProducts = async (req, res) => {
@@ -84,6 +87,50 @@ export const createProduct = async (req, res) => {
     res.status(201).json({ success: true, data: newProduct });
   } catch (error) {
     console.log(`Error in creating a product: ${error.message}`);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+export const RegisterUser = async (req, res) => {
+  console.log(req.body);
+
+  try {
+    const result = validateUser(req.body);
+    if (!result.success) {
+      return res
+        .status(400)
+        .json({ success: false, errors: result.errors.join(", ") });
+    }
+    const { firstName, lastName, username, email, password } = req.body;
+    const existingUser = await User.findOne({ username });
+    const existingEmail = await User.findOne({ email });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User already exists" });
+    }
+    if (existingEmail) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email already exists" });
+    }
+    const hashedPassword = await bcrypt.hash(
+      password,
+      parseInt(process.env.SALT)
+    );
+
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      username,
+      email,
+      password: hashedPassword,
+    });
+    res.status(201).json({
+      success: true,
+      message: "Signed up successfully",
+    });
+  } catch (error) {
+    console.log(`Error ${error}`);
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };

@@ -1,8 +1,13 @@
-const Dashboard = ({ handleHome }) => {
+const Dashboard = ({ handleHome, handleSettings }) => {
   return (
     <div>
-      <h1>Dashboard</h1>
-
+      <ul>
+        <li>Hello username</li>
+        <li onClick={handleSettings}>Settings</li>
+      </ul>
+      <div>
+        <h2>Purchase History</h2>
+      </div>
       <button onClick={handleHome}>Home</button>
     </div>
   );
