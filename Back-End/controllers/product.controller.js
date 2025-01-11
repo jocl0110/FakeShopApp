@@ -2,6 +2,7 @@ import Product from "../models/product.model.js";
 import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
 import { validateUser } from "../models/user.model.js";
+import NodeMailer from "nodemailer";
 
 //!  GET METHODS
 export const getAllProducts = async (req, res) => {
@@ -91,16 +92,15 @@ export const createProduct = async (req, res) => {
   }
 };
 export const RegisterUser = async (req, res) => {
-  console.log(req.body);
-
   try {
     const result = validateUser(req.body);
     if (!result.success) {
       return res
         .status(400)
-        .json({ success: false, errors: result.errors.join(", ") });
+        .json({ success: false, message: result.errors.join(", ") });
     }
-    const { firstName, lastName, username, email, password } = req.body;
+    const { firstName, lastName, username, email, password, adminCode } =
+      req.body;
     const existingUser = await User.findOne({ username });
     const existingEmail = await User.findOne({ email });
     if (existingUser) {
@@ -117,20 +117,99 @@ export const RegisterUser = async (req, res) => {
       password,
       parseInt(process.env.SALT)
     );
-
-    const newUser = await User.create({
+    let role = undefined;
+    if (adminCode && adminCode === process.env.ADMIN_CODE) {
+      role = "admin";
+    }
+    const transpoter = NodeMailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+      },
+    });
+    const htmlContent = `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome to FakeStoreApp</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f9f9f9;
+                margin: 0;
+                padding: 20px;
+            }
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #ffffff;
+                border-radius: 10px;
+                padding: 20px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            h1 {
+                color: #333;
+                font-size: 24px;
+            }
+            p {
+                color: #555;
+                font-size: 16px;
+            }
+            .button {
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Hello ${firstName},</h1>
+            <p>Thank you for subscribing to **FakeStoreApp**!</p>
+            <p>Your account has been successfully created. We are thrilled to have you on board. Here are some things you can expect:</p>
+            <ul>
+                <li>Explore our collection of products at unbeatable prices.</li>
+                <li>Track your order history easily.</li>
+                <li>Enjoy exclusive discounts and offers for registered users.</li>
+            </ul>
+            <p>To get started, click the button below to visit your profile:</p>
+            <a href="https://www.fakestoreapp.com/profile" class="button">Visit Profile</a>
+            <p>If you have any questions or need help, feel free to reach out to us at <a href="mailto:support@fakestoreapp.com">support@fakestoreapp.com</a>.</p>
+            <p>Best regards,</p>
+            <p>The FakeStoreApp Team</p>
+        </div>
+    </body>
+    </html>
+  `;
+    const info = await transpoter.sendMail({
+      from: "FakeStoreApp Managment <joseluisizquierdoshernandez@gmail.com",
+      to: email,
+      subject: "Thanks for choosing FakeStore APP",
+      html: htmlContent,
+    });
+    console.log(`Message Sent, ${info.messageId}`);
+    await User.create({
       firstName,
       lastName,
       username,
       email,
       password: hashedPassword,
+      role,
     });
     res.status(201).json({
       success: true,
       message: "Signed up successfully",
     });
   } catch (error) {
-    console.log(`Error ${error}`);
+    console.log(`Error registering user:  ${error}`);
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };

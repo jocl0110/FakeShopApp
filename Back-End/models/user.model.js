@@ -23,6 +23,14 @@ const mongooseUserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  adminCode: {
+    type: String,
+    required: false,
+  },
+  role: {
+    type: String,
+    default: "user",
+  },
 });
 const userSchema = zod.object({
   firstName: zod
@@ -38,7 +46,8 @@ const userSchema = zod.object({
     .min(3, "Username must be between 3 and 30 characters")
     .max(30, "Username must be between 3 and 30 characters"),
   email: zod.string().email("Email must be a valid email address"),
-  password: zod.string().min(6, "Password hash must be at least 6 characters"),
+  password: zod.string().min(6, "Password must be at least 6 characters long"),
+  adminCode: zod.string().optional(),
 });
 const User = mongoose.model("User", mongooseUserSchema);
 

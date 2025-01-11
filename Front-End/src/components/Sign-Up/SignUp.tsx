@@ -2,38 +2,53 @@ import { useState } from "react";
 import Footer from "../Footer/Footer";
 import axios from "axios";
 
-function SignUp({ handleHome, handleSignIn }) {
-  const [formData, setFormData] = useState({
-    email: "",
-    username: "",
-    firstName: "",
-    lastName: "",
-    password: "",
-    confirmPassword: "",
-    adminCode: "",
-  });
-  const [error, setError] = useState("");
+function SignUp({
+  handleHome,
+  handleSignIn,
+  handleChange,
+  setMessage,
+  message,
+  formData,
+  setFormData,
+}) {
   const [loading, setLoading] = useState(false);
-  let message;
-  const handleChange = (e) => {
-    const { name, value } = e.target;
 
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      setMessage("Passwords do not match");
+      return;
+    }
     try {
+      setLoading(true);
       const response = await axios.post("/api/products/signup", formData, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-      message = response.message;
+      if (response.data.success) {
+        setMessage(response.data.message || "Sign-up successfully");
+        setFormData({
+          email: "",
+          username: "",
+          firstName: "",
+          lastName: "",
+          password: "",
+          confirmPassword: "",
+          adminCode: "",
+        });
+      } else {
+        setMessage(response.data.message || "Something went wrong");
+      }
     } catch (error) {
       console.error("Error during submission: ", error);
+
+      const errorMessage =
+        error.response?.data?.message || "An unexpected error occurred";
+      setMessage(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,6 +58,7 @@ function SignUp({ handleHome, handleSignIn }) {
         <form onSubmit={handleSubmit}>
           <label htmlFor="email">Email:</label>
           <input
+            value={formData.email}
             onChange={handleChange}
             type="email"
             id="email"
@@ -51,6 +67,7 @@ function SignUp({ handleHome, handleSignIn }) {
           />
           <label htmlFor="username">Username:</label>
           <input
+            value={formData.username}
             onChange={handleChange}
             type="username"
             id="username"
@@ -59,6 +76,7 @@ function SignUp({ handleHome, handleSignIn }) {
           />
           <label htmlFor="firstName">First Name:</label>
           <input
+            value={formData.firstName}
             onChange={handleChange}
             required
             type="text"
@@ -67,6 +85,7 @@ function SignUp({ handleHome, handleSignIn }) {
           />
           <label htmlFor="lastName">Last Name:</label>
           <input
+            value={formData.lastName}
             onChange={handleChange}
             required
             type="text"
@@ -75,6 +94,7 @@ function SignUp({ handleHome, handleSignIn }) {
           />
           <label htmlFor="password">Password:</label>
           <input
+            value={formData.password}
             onChange={handleChange}
             required
             type="password"
@@ -83,18 +103,20 @@ function SignUp({ handleHome, handleSignIn }) {
           />
           <label htmlFor="confirmPassword">Confirm Password:</label>
           <input
+            value={formData.confirmPassword}
             onChange={handleChange}
             required
             type="password"
             id="confirmPassword"
             name="confirmPassword"
           />
-          <label htmlFor="admin-code">Optional: Admin Code</label>
+          <label htmlFor="adminCode">Optional: Admin Code</label>
           <input
+            value={formData.adminCode}
             onChange={handleChange}
             type="text"
-            id="admin-code"
-            name="admin-code"
+            id="adminCode"
+            name="adminCode"
           />
           <button type="submit">Sign Up</button>
         </form>
@@ -105,11 +127,7 @@ function SignUp({ handleHome, handleSignIn }) {
           Home
         </button>
       </div>
-      {message && (
-        <div>
-          <p>{message}</p>
-        </div>
-      )}
+
       <Footer />
     </div>
   );

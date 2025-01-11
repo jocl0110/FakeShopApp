@@ -16,6 +16,8 @@ import SignIn from "./components/Sign-In/SignIn";
 import SignUp from "./components/Sign-Up/SignUp";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Settings from "./components/Settings/Settings";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import useAuth from "./hooks/useAuth";
 
 // Types
 interface ProductType {
@@ -35,13 +37,23 @@ function App() {
   const [cart, setCart] = useState<ProductType[]>([]);
   const [favoriteList, setFavoriteList] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [message, setMessage] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    username: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+    confirmPassword: "",
+    adminCode: "",
+  });
 
   //Getting total quantity of items in the cart and total price
   const totalQuantity = cart.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice: string = cart
     .reduce((acc, item) => acc + item.price * item.quantity, 0)
     .toFixed(2);
-
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
   const realTotalPrice: number = parseFloat(totalPrice);
 
   const getData = async (searchParam = "") => {
@@ -144,6 +156,14 @@ function App() {
   const location = useLocation();
 
   const noNavBar = ["/signin", "/signup"];
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   return (
     <>
@@ -344,22 +364,39 @@ function App() {
         <Route
           path="/signin"
           element={
-            <SignIn handleHome={handleHome} handleSignUp={handleSignUp} />
+            <SignIn
+              setIsAuthenticated={setIsAuthenticated}
+              setMessage={setMessage}
+              message={message}
+              handleHome={handleHome}
+              handleSignUp={handleSignUp}
+            />
           }
         ></Route>
         <Route
           path="/signup"
           element={
-            <SignUp handleSignIn={handleSignIn} handleHome={handleHome} />
+            <SignUp
+              formData={formData}
+              setFormData={setFormData}
+              setMessage={setMessage}
+              message={message}
+              handleChange={handleChange}
+              handleSignIn={handleSignIn}
+              handleHome={handleHome}
+            />
           }
         ></Route>
         <Route
           path="/dashboard"
           element={
-            <Dashboard
-              handleHome={handleHome}
-              handleSettings={handleSettings}
-            />
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <Dashboard
+                setIsAuthenticated={setIsAuthenticated}
+                handleHome={handleHome}
+                handleSettings={handleSettings}
+              />
+            </ProtectedRoute>
           }
         ></Route>
         <Route path="/settings" element={<Settings />}></Route>
